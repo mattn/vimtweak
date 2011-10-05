@@ -1,5 +1,6 @@
 /*
  cl /LD vimtweak.c user32.lib
+ gcc -shared -o vimtweak.dll vimtweak.c
  ------------------------------
  :call libcallnr("vimtweak.dll", "SetAlpha", 200)
  :call libcallnr("vimtweak.dll", "EnableMaximize", 1)
