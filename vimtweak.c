@@ -11,7 +11,7 @@
 #define LWA_ALPHA 2
 #endif
 
-#ifndef WS_EX_LAYERD
+#ifndef WS_EX_LAYERED
 #define WS_EX_LAYERED 0x00080000
 #endif
 
@@ -108,8 +108,8 @@ LONG _declspec(dllexport) EnableMaximize(LONG bEnable)
 	return GetLastError();
 }
 
-LONG _declspec(dllexport) EnableTopMost(LONG bEnable)
-{
+LONG _declspec(dllexport)
+EnableTopMost(LONG bEnable) {
 	HWND hTop = NULL;
 	DWORD dwThreadID;
 
