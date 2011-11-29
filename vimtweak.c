@@ -16,23 +16,45 @@
 #define WS_EX_LAYERED 0x00080000
 #endif
 
+static HWND hTopWindow = NULL;
+
 BOOL CALLBACK
 FindWindowProc(HWND hwnd, LPARAM lParam) {
-    HWND* pphWnd = (HWND*)lParam;
+  HWND* pphWnd = (HWND*)lParam;
 
   if (GetParent(hwnd)) {
-       *pphWnd = NULL;
+    *pphWnd = NULL;
     return TRUE;
   }
-     *pphWnd = hwnd;
-     return FALSE;
+  *pphWnd = hwnd;
+  return FALSE;
+}
+
+static HWND
+GetVimWindow() {
+  if (hTopWindow) {
+    return hTopWindow;
+  }
+
+  HMODULE hDllKernel32 = LoadLibrary("kernel32");
+  if (hDllKernel32) {
+    HWND (WINAPI *pfnGetConsoleWindow)();
+    pfnGetConsoleWindow
+      = (HWND (WINAPI *)())
+          GetProcAddress(hDllKernel32, "GetConsoleWindow");
+    if (pfnGetConsoleWindow && (hTopWindow = (HWND) pfnGetConsoleWindow())) {
+      ShowWindow(hTopWindow, SW_SHOW);
+      return hTopWindow;
+    }
+  }
+  DWORD dwThreadID = GetCurrentThreadId();
+  EnumThreadWindows(dwThreadID, FindWindowProc, (LPARAM)&hTopWindow);
+  return hTopWindow;
 }
 
 LONG _declspec(dllexport)
 SetAlpha(LONG nTrans) {
-  HMODULE hDllUser32;
-
-  hDllUser32 = LoadLibrary("user32");
+  HMODULE hDllUser32 = LoadLibrary("user32");
   if (hDllUser32) {
     BOOL (WINAPI *pfnSetLayeredWindowAttributes)(HWND,DWORD,BYTE,DWORD);
 
@@ -41,21 +63,15 @@ SetAlpha(LONG nTrans) {
           GetProcAddress(hDllUser32, "SetLayeredWindowAttributes");
 
     if (pfnSetLayeredWindowAttributes) {
-      HWND hTop = NULL;
-      DWORD dwThreadID;
-
-      dwThreadID = GetCurrentThreadId();
-      EnumThreadWindows(dwThreadID, FindWindowProc, (LPARAM)&hTop);
-
+      HWND hTop = GetVimWindow();
       if (hTop) {
         if (nTrans == 255) {
-            SetWindowLong(hTop, GWL_EXSTYLE,
-            GetWindowLong(hTop, GWL_EXSTYLE) & ~WS_EX_LAYERED); 
+          SetWindowLong(hTop, GWL_EXSTYLE,
+          GetWindowLong(hTop, GWL_EXSTYLE) & ~WS_EX_LAYERED); 
         } else {
-            SetWindowLong(hTop, GWL_EXSTYLE,
-            GetWindowLong(hTop, GWL_EXSTYLE) | WS_EX_LAYERED); 
-          pfnSetLayeredWindowAttributes(
-                hTop, 0, (BYTE)nTrans, LWA_ALPHA);
+          SetWindowLong(hTop, GWL_EXSTYLE,
+          GetWindowLong(hTop, GWL_EXSTYLE) | WS_EX_LAYERED); 
+          pfnSetLayeredWindowAttributes(hTop, 0, (BYTE)nTrans, LWA_ALPHA);
         }
       }
     }
@@ -66,13 +82,8 @@ SetAlpha(LONG nTrans) {
 
 LONG _declspec(dllexport)
 EnableCaption(LONG bCaption) {
-  HWND hTop = NULL;
-  DWORD dwThreadID;
-
-  dwThreadID = GetCurrentThreadId();
-  EnumThreadWindows(dwThreadID, FindWindowProc, (LPARAM)&hTop);
-
-  if (hTop) {
+  HWND hTop;
+  if (hTop = GetVimWindow()) {
     if (bCaption == 0)
       SetWindowLong(hTop, GWL_STYLE,
         GetWindowLong(hTop, GWL_STYLE) & ~WS_CAPTION); 
@@ -85,13 +96,8 @@ EnableCaption(LONG bCaption) {
 
 LONG _declspec(dllexport)
 EnableMaximize(LONG bEnable) {
-  HWND hTop = NULL;
-  DWORD dwThreadID;
-
-  dwThreadID = GetCurrentThreadId();
-  EnumThreadWindows(dwThreadID, FindWindowProc, (LPARAM)&hTop);
-
-  if (hTop) {
+  HWND hTop;
+  if (hTop = GetVimWindow()) {
     if (bEnable == 0)
       SendMessage(hTop, WM_SYSCOMMAND, SC_RESTORE, 0);
     else
@@ -102,13 +108,8 @@ EnableMaximize(LONG bEnable) {
 
 LONG _declspec(dllexport)
 EnableTopMost(LONG bEnable) {
-  HWND hTop = NULL;
-  DWORD dwThreadID;
-
-  dwThreadID = GetCurrentThreadId();
-  EnumThreadWindows(dwThreadID, FindWindowProc, (LPARAM)&hTop);
-
-  if (hTop) {
+  HWND hTop;
+  if (hTop = GetVimWindow()) {
     if (bEnable == 0)
       SetWindowPos(hTop, HWND_NOTOPMOST, 0, 0, 0, 0,
         SWP_NOSIZE | SWP_NOMOVE);
