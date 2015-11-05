@@ -16,6 +16,12 @@
 #define WS_EX_LAYERED 0x00080000
 #endif
 
+#ifdef _MSC_VER
+#define EXPORT _declspec(dllexport)
+#else
+#define EXPORT
+#endif
+
 static HWND hTopWindow = NULL;
 
 BOOL CALLBACK
@@ -52,7 +58,7 @@ GetVimWindow() {
   return hTopWindow;
 }
 
-LONG _declspec(dllexport)
+EXPORT LONG
 SetAlpha(LONG nTrans) {
   HMODULE hDllUser32 = LoadLibrary("user32");
   if (hDllUser32) {
@@ -80,7 +86,7 @@ SetAlpha(LONG nTrans) {
   return GetLastError();
 }
 
-LONG _declspec(dllexport)
+EXPORT LONG
 EnableCaption(LONG bCaption) {
   HWND hTop;
   if (hTop = GetVimWindow()) {
@@ -94,7 +100,7 @@ EnableCaption(LONG bCaption) {
   return GetLastError();
 }
 
-LONG _declspec(dllexport)
+EXPORT LONG
 EnableMaximize(LONG bEnable) {
   HWND hTop;
   if (hTop = GetVimWindow()) {
@@ -106,7 +112,7 @@ EnableMaximize(LONG bEnable) {
   return GetLastError();
 }
 
-LONG _declspec(dllexport)
+EXPORT LONG
 EnableTopMost(LONG bEnable) {
   HWND hTop;
   if (hTop = GetVimWindow()) {
