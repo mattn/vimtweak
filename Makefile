@@ -1,4 +1,10 @@
-all : vimtweak.dll
+all : vimtweak64.dll vimtweak32.dll
 
-vimtweak.dll : vimtweak.c
-	gcc -shared -o $@ $<
+vimtweak64.dll : vimtweak.c
+	x86_64-w64-mingw32-gcc -shared -o $@ $<
+
+vimtweak32.dll : vimtweak.c
+	i686-w64-mingw32-gcc -shared -o $@ $<
+
+clean:
+	-rm *.dll
