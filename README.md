@@ -15,13 +15,13 @@ copy vimtweak32.dll or vimtweak64.dll into same directory with gvim.exe
 #### For example, 200/255 alpha
 
 ```
-:call libcallnr("vimtweak.dll", "SetAlpha", 200)
+:call libcallnr("vimtweak64.dll", "SetAlpha", 200)
 ```
 
 #### reset alpha
 
 ```
-:call libcallnr("vimtweak.dll", "SetAlpha", 255)
+:call libcallnr("vimtweak64.dll", "SetAlpha", 255)
 ```
 
 ### Maximized Window
@@ -29,13 +29,13 @@ copy vimtweak32.dll or vimtweak64.dll into same directory with gvim.exe
 #### Enable
 
 ```
-:call libcallnr("vimtweak.dll", "EnableMaximize", 1)
+:call libcallnr("vimtweak64.dll", "EnableMaximize", 1)
 ```
 
 #### Disable
 
 ```
-:call libcallnr("vimtweak.dll", "EnableMaximize", 0)
+:call libcallnr("vimtweak64.dll", "EnableMaximize", 0)
 ```
 
 ### TopMost Window
@@ -43,13 +43,13 @@ copy vimtweak32.dll or vimtweak64.dll into same directory with gvim.exe
 #### Enable
 
 ```
-:call libcallnr("vimtweak.dll", "EnableTopMost", 1)
+:call libcallnr("vimtweak64.dll", "EnableTopMost", 1)
 ```
 
 #### Disable
 
 ```
-:call libcallnr("vimtweak.dll", "EnableTopMost", 0)
+:call libcallnr("vimtweak64.dll", "EnableTopMost", 0)
 ```
 
 ## License
