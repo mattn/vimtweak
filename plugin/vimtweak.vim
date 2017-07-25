@@ -2,7 +2,9 @@ if !has('gui_running') || (!has('win32') && !has('win64'))
   finish
 endif
 
-let g:vimtweak_dll_path = get(split(globpath(&rtp, has('win64') ? 'vimtweak64.dll' : 'vimtweak32.dll'), '\n'), 0, '')
+let g:vimtweak_dll_path = expand('<sfile>:p:h:h') . has('win64') ? '/vimtweak64.dll' : '/vimtweak32.dll'
+
+
 
 command! -nargs=1 VimTweakSetAlpha call libcallnr(g:vimtweak_dll_path, "SetAlpha", 0+<args>)
 command! VimTweakEnableMaximize call libcallnr(g:vimtweak_dll_path, "EnableMaximize", 1)
