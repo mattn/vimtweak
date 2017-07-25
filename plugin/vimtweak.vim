@@ -2,7 +2,7 @@ if !has('gui_running') || (!has('win32') && !has('win64'))
   finish
 endif
 
-let g:vimtweak_dll_path = expand('<sfile>:p:h:h') . has('win64') ? '/vimtweak64.dll' : '/vimtweak86.dll'
+let g:vimtweak_dll_path = expand('<sfile>:p:h:h') . has('win64') ? '/vimtweak64.dll' : '/vimtweak32.dll'
 
 
 
